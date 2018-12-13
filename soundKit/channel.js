@@ -11,6 +11,8 @@ class channel {
         this.timeOffset = 0
         this.playingId = 0
         this.player = player
+
+        this.duration = 0
     }
 
     /* prepare for recording */
@@ -21,16 +23,35 @@ class channel {
 
     /* add sound to channel */
     record( audio ) {
+        const time = Date.now() - this.timeOffset
+        const duration = time + audio.duration
+
         this.soundsTrack.push({
-            time: Date.now() - this.timeOffset,
+            time,
             audio
         })
+
+        this.duration < duration && (this.duration = duration)
+    }
+
+    setDuration(duration) {
+        this.duration = duration
+    }
+
+    /* enable or disable 'play in loop' mode, default change state in toggle mode  */
+    loop( on = !this.loop ) {
+        this.mode = on ? MODE_LOOP : MODE_PLAY
+    }
+
+    /* enable or disable muted, default change state in toggle mode */
+    mute( on = !this.muted ) {
+        this.muted = on
     }
 
     /* clear channel sounds */
     clear() {
         this.soundsTrack = []
-    }    
+    }
 
     /* play channel */
     play() {
@@ -42,7 +63,7 @@ class channel {
         
         this.soundsTrack.forEach( sound => {
             setTimeout( _ => {
-                /* prevent to play sound from removed when player is stopped or new version exists */
+                /* prevent to play removed sounds or old verion sound (from with previous revision) */
                 if( playingId == this.playingId ) {
                     sound.audio.play()
                 }
@@ -50,7 +71,10 @@ class channel {
         })
 
         if( this.mode == MODE_LOOP ) {
-            setTimeout( _ => this.play(), this.soundsTrack[ this.soundsTrack.length - 1 ].time )
+            setTimeout( _ => 
+                this.playingId == playingId && this.play(), 
+                this.duration
+            )
         }
     }
 

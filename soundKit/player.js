@@ -96,8 +96,6 @@ class soundKit {
     recordWithListening( channelId = this.activeChannel.id ) {
         this.record(channelId)
 
-        this.state = STATE_PLAYING
-
         this.channels.forEach( channel => 
             channel.id != channelId && channel.play() 
         )
@@ -172,21 +170,6 @@ class soundKit {
     isPlaying() { return this.state == STATE_PLAYING }
     isStopped() { return this.state == STATE_STOPED }
     isRecording() { return this.state == STATE_RECORDING }
-    
-    // onRecording() {
-    //     // this.activeChannel.push()
-    // }
-
-    // on(eventName, callback) {}
-
-    // eventPlay() {}
-    // eventStop() {}
-    // eventRestart() {}
-    // eventRecord() {}
-    // eventRecordStop() {}
-    // eventChannelAdd() {}
-    // eventChannelRemove() {}
-    // eventChannelChange(channelId) {}
 }
 
 export default soundKit
