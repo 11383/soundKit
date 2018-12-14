@@ -8,18 +8,16 @@
 
     <script type="module">
         import soundKit from '../../src/player.js'
-        import { drum } from './presets/presets.js' 
+        import { drum } from './presets/presets.js'
 
         const player = new soundKit()
 
-        window.player = player
-        
         player.addChannel('drum')
         player.addPreset('drum', drum)
     </script>
 </head>
 <body>
-    Sound - keyboard 
+    Sound - keyboard key
     <ul>
         <li> boom - <kbd>1</kbd> </li>
         <li> clap - <kbd>2</kbd> </li>

@@ -27,7 +27,7 @@ class soundKit {
 
     // add channel and set it as active
     addChannel(id = Date.now()) {
-        const channel = new soundKitChannel(id, this)
+        const channel = new soundKitChannel(id)
 
         this.channels.push(channel)
         this.activeChannel = channel

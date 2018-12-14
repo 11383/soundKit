@@ -2,7 +2,7 @@ const MODE_PLAY = 'play'
 const MODE_LOOP = 'loop'
 
 class channel {
-    constructor(id, player) {
+    constructor(id) {
         this.id = id
         this.soundsTrack = []
         this.muted = false
@@ -10,7 +10,6 @@ class channel {
 
         this.timeOffset = 0
         this.playingId = 0
-        this.player = player
 
         this.duration = 0
     }
@@ -65,7 +64,7 @@ class channel {
             setTimeout( _ => {
                 /* prevent to play removed sounds or old verion sound (from with previous revision) */
                 if( playingId == this.playingId ) {
-                    sound.audio.play()
+                    this.playSound(sound.audio)
                 }
             }, sound.time )
         })
@@ -76,6 +75,10 @@ class channel {
                 this.duration
             )
         }
+    }
+
+    playSound(audio) {
+        audio.play()
     }
 
     stop() {
