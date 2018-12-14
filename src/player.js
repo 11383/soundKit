@@ -1,6 +1,7 @@
 import Event from './eventEmitter.js'
 import soundKitChannel from './channel.js'
 import audioLoader from './audioLoader.js'
+import keyGenerator, {defaultGenerator} from './keyBindingGenerator.js'
 
 const STATE_PLAYING = 'play'
 const STATE_STOPED = 'stop'
@@ -18,6 +19,8 @@ class soundKit {
         this.activeChannel = null
 
         this.event = new Event()
+
+        this.setKeyGenerator( defaultGenerator )
 
         document.addEventListener( 'keypress', e => this.onKeyPress(e) )
     }
@@ -59,6 +62,10 @@ class soundKit {
 
         if(index !== null)
             this.channels.splice(index, 1)
+    }
+
+    setKeyGenerator( generator ) {
+        this.keyGenerator = new keyGenerator(generator)
     }
 
     toggle(state = null) { // state==true => stop
@@ -104,9 +111,15 @@ class soundKit {
     addPreset(name, sounds) {
         const presetSounds = []
 
-        sounds.map( sound => presetSounds.push( 
-            new audioLoader(sound.path, sound.name, { charCode: sound.charCode } ) 
-        ))
+        sounds.forEach( sound => {
+            sound.charCode && this.keyGenerator.used(sound.charCode)
+
+            presetSounds.push(
+                new audioLoader(sound.path, sound.name, { 
+                    charCode: sound.charCode ? sound.charCode : this.keyGenerator.get()
+                })
+            )
+        })
 
         const promise = Promise.all(presetSounds)
               promise.then( (loadedSounds) => this.onPresetLoaded(name, loadedSounds) )

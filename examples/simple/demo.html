@@ -6,13 +6,13 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>SoundKit</title>
 
-    <!-- <script src="main.js"></script> -->
-
     <script type="module">
         import soundKit from '../../src/player.js'
         import { drum } from './presets/presets.js' 
 
         const player = new soundKit()
+
+        window.player = player
         
         player.addChannel('drum')
         player.addPreset('drum', drum)
