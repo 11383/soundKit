@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>SoundKit</title>
+
+    <!-- <script src="main.js"></script> -->
+
+    <script type="module">
+        import soundKit from '../../src/player.js'
+        import { drum } from './presets/presets.js' 
+
+        const player = new soundKit()
+        
+        player.addChannel('drum')
+        player.addPreset('drum', drum)
+    </script>
+</head>
+<body>
+    Sound - keyboard 
+    <ul>
+        <li> boom - <kbd>1</kbd> </li>
+        <li> clap - <kbd>2</kbd> </li>
+        <li> hihat - <kbd>3</kbd> </li>
+        <li> kick - <kbd>4</kbd> </li>
+        <li> openhat - <kbd>5</kbd> </li>
+        <li> ride - <kbd>6</kbd> </li>
+        <li> snare - <kbd>7</kbd> </li>
+        <li> tink - <kbd>8</kbd> </li>
+        <li> tom - <kbd>9</kbd> </li>
+    </ul>
+</body>
+</html>
