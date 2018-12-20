@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <base href="/">
+    <title>SoundKit - Metrum</title>
+
+    <script type="module">
+        import Metronome from '../../src/metronome/metronome.js' 
+
+        const metronome = new Metronome()
+
+        window.metronome = metronome
+
+        metronome.on('beat', () => { 
+            console.log('I will show on every beat') 
+        })
+
+        metronome.on('beat_1', () => { 
+            console.log('I will show only on first beat') 
+        })
+
+        metronome.on('sound', (sound) => { 
+            console.log('I will show on every sound', sound) 
+        })
+
+        metronome.on('loaded', () => {
+            console.log('loaded')
+            metronome.play()
+        })
+    </script>
+</head>
+<body>
+    Have fun with 'metronome' object in console ;)
+    
+    <h2>Basic usage</h2>
+    <ul>
+        <li>
+            <code>
+                new Metronome({
+                    beats: 4,
+                    tempo: 60,
+                    preset
+                })
+            </code>
+        </li>
+        <li>
+            <code>metronome.setTempo(120)</code>
+        </li>
+        <li>
+            <code>metronome.setMetrum(4)</code>
+        </li>
+        <li>
+            <code>metronome.play()</code>
+        </li>
+        <li>
+            <code>metronome.stop()</code>
+        </li>
+    </ul>
+    
+    <h2>Events</h2>
+    <ul>
+        <li>
+            <code>
+                metronome.on('beat', () => { 
+                    console.log('I will show on every beat') 
+                })
+            </code>
+        </li>
+        <li>
+            <code>
+                metronome.on('beat_1', () => { 
+                    console.log('I will show only on first beat') 
+                })
+            </code>
+        </li>
+        <li>
+            <code>
+                metronome.on('sound', (sound) => { 
+                    console.log('I will show on every sound', sound) 
+                })
+            </code>
+        </li>
+        <li>
+            <code>
+                metronome.on('loaded', (metronome) => {
+                    console.log('Metronome loaded')
+                })
+            </code>
+        </li>
+    </ul>
+</body>
+</html>

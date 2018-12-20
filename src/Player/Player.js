@@ -1,7 +1,10 @@
-import Event from './eventEmitter.js'
-import soundKitChannel from './channel.js'
-import audioLoader from './audioLoader.js'
-import keyGenerator, {defaultGenerator} from './keyBindingGenerator.js'
+import Event from '../Helpers/EventEmitter.js'
+import SoundKitChannel from '../Channel/Channel.js'
+import LocalStorage from '../Storage/LocalStorage.js'
+
+import PlayerSerializer from './PlayerSerializer.js'
+import KeyBinder from '../Helpers/KeyBinder.js';
+import Preset from '../Preset/Preset.js'
 
 const STATE_PLAYING = 'play'
 const STATE_STOPED = 'stop'
@@ -19,15 +22,16 @@ class soundKit {
         this.activeChannel = null
 
         this.event = new Event()
+        this.keyBinder = new KeyBinder()
 
-        this.setKeyGenerator( defaultGenerator )
-
-        document.addEventListener( 'keypress', e => this.onKeyPress(e) )
+        document.addEventListener( 'keypress', e =>{ 
+            this.playSoundAtIndex( this.keyBinder.indexOf( e.charCode ) )
+        })
     }
 
     // add channel and set it as active
     addChannel(id = Date.now()) {
-        const channel = new soundKitChannel(id)
+        const channel = new SoundKitChannel({ id })
 
         this.channels.push(channel)
         this.activeChannel = channel
@@ -64,8 +68,8 @@ class soundKit {
             this.channels.splice(index, 1)
     }
 
-    setKeyGenerator( generator ) {
-        this.keyGenerator = new keyGenerator(generator)
+    setKeyBindings( bindings ) {
+        this.keyBinder = new keyBinder(bindings)
     }
 
     toggle(state = null) { // state==true => stop
@@ -91,6 +95,12 @@ class soundKit {
         this.play()
     }
 
+    clear() {
+        this.channels = []
+        this.activePreset = null
+        this.activeChannel = null
+    }
+
     record( channelId = this.activeChannel.id ) {
         this.stop()
         this.state = STATE_RECORDING
@@ -109,22 +119,9 @@ class soundKit {
     }
 
     addPreset(name, sounds) {
-        const presetSounds = []
-
-        sounds.forEach( sound => {
-            sound.charCode && this.keyGenerator.used(sound.charCode)
-
-            presetSounds.push(
-                new audioLoader(sound.path, sound.name, { 
-                    charCode: sound.charCode ? sound.charCode : this.keyGenerator.get()
-                })
-            )
-        })
-
-        const promise = Promise.all(presetSounds)
-              promise.then( (loadedSounds) => this.onPresetLoaded(name, loadedSounds) )
-
-        return promise
+        Preset
+        .load( sounds, name )
+        .then( preset => this.onPresetLoaded(name, preset) )
     }
 
     setPreset(presetName) {
@@ -143,21 +140,17 @@ class soundKit {
     }
 
     onPresetLoaded(name, preset) {
-        /* map preset via key bindings */
         this.activePreset = name
         this.presets[name] = preset
 
         this.event.emit('loaded', preset)
     }
 
-    onKeyPress(e) {
-        console.log('keypressed', e.charCode)
+    playSoundAtIndex(index) {
+        if(index == -1 || this.getPreset().length < index)
+            return
 
-        const sound = this.getPreset().find( sound => 
-            sound.params.charCode == e.charCode
-        )
-
-        sound && this.run( sound )
+        this.run( this.getPreset()[index] )
     }
 
     playSound(soundName) {
@@ -178,6 +171,21 @@ class soundKit {
 
     on(eventName, callback) {
         this.event.on(eventName, callback)
+    }
+
+    save(name, storage = LocalStorage) {
+        storage.set(
+            name,
+            PlayerSerializer.from(this)
+        )
+    }
+
+    load(name, storage = LocalStorage) {
+        const storedData = storage.get(name)
+
+        Object.assign(this,
+            PlayerSerializer.parse(storedData, this.presets)    
+        )
     }
 
     isPlaying() { return this.state == STATE_PLAYING }

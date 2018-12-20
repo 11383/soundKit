@@ -1,17 +1,26 @@
 const MODE_PLAY = 'play'
 const MODE_LOOP = 'loop'
 
-class channel {
-    constructor(id) {
+class Channel {
+    constructor({
+        id = Date.now(), 
+        muted = false, 
+        mode = MODE_PLAY, 
+        timeOffset = 0,
+        playingId = 0,
+        duration = 0,
+        soundsTrack = []
+    } = {} ) {
+
         this.id = id
-        this.soundsTrack = []
-        this.muted = false
-        this.mode = MODE_PLAY
+        this.muted = muted
+        this.mode = mode
+        this.timeOffset = timeOffset
+        this.playingId = playingId
+        this.duration = duration
+        this.soundsTrack = soundsTrack
 
-        this.timeOffset = 0
-        this.playingId = 0
-
-        this.duration = 0
+        return id
     }
 
     /* prepare for recording */
@@ -23,7 +32,7 @@ class channel {
     /* add sound to channel */
     record( audio ) {
         const time = Date.now() - this.timeOffset
-        const duration = time + audio.duration
+        const duration = time + audio.audio.duration
 
         this.soundsTrack.push({
             time,
@@ -38,7 +47,7 @@ class channel {
     }
 
     /* enable or disable 'play in loop' mode, default change state in toggle mode  */
-    loop( on = !this.loop ) {
+    loop( on = !this.loop ) { // @todo this.loop not exists!
         this.mode = on ? MODE_LOOP : MODE_PLAY
     }
 
@@ -50,6 +59,9 @@ class channel {
     /* clear channel sounds */
     clear() {
         this.soundsTrack = []
+        this.duration = 0
+        this.muted = false
+        this.mode = MODE_PLAY
     }
 
     /* play channel */
@@ -86,4 +98,4 @@ class channel {
     }
 }
 
-export default channel
+export default Channel
