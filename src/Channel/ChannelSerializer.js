@@ -1,4 +1,4 @@
-import Channel from './Channel.js'
+import { Channel } from '../SoundKit.js'
 
 class ChannelSerializer {
 

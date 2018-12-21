@@ -1,5 +1,5 @@
-import Player from './Player.js'
-import ChannelSerializer from '../Channel/ChannelSerializer.js'
+import { Player } from '../SoundKit.js'
+import { ChannelSerializer } from '../utils.js'
 
 class PlayerSerializer {
 

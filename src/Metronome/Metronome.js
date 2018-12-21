@@ -1,6 +1,5 @@
-import Channel from '../Channel/Channel.js'
-import Event from '../Helpers/EventEmitter.js'
-import Preset from '../Preset/Preset.js'
+import { Channel, Preset } from '../SoundKit.js'
+import { EventEmitter } from '../utils.js'
 import metronomeSounds from './sounds/metronomePreset.js'
 
 const defaultParams = {
@@ -19,7 +18,7 @@ class Metronome extends Channel {
         this.beats = beats
         this.tempo = tempo
         this.beatsCounter = 0
-        this.event = new Event()
+        this.event = new EventEmitter()
 
         this.loop( true )
         this.addPreset( preset )
@@ -54,12 +53,12 @@ class Metronome extends Channel {
     }
 
     play( params ) {
+        this.event.emit(`beat_${this.beatsCounter}`)
+        this.event.emit('beat', this.beatsCounter)
+
         super.play( params )
 
         this.beatsCounter++
-
-        this.event.emit(`beat_${this.beatsCounter}`)
-        this.event.emit('beat', this.beatsCounter)
     }
 
     playSound( params ) {

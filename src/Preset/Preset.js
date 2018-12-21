@@ -1,4 +1,4 @@
-import AudioLoader from '../Helpers/AudioLoader.js'
+import { AudioLoader } from '../utils.js'
 
 class Preset {
 

@@ -1,10 +1,5 @@
-import Event from '../Helpers/EventEmitter.js'
-import SoundKitChannel from '../Channel/Channel.js'
-import LocalStorage from '../Storage/LocalStorage.js'
-
-import PlayerSerializer from './PlayerSerializer.js'
-import KeyBinder from '../Helpers/KeyBinder.js';
-import Preset from '../Preset/Preset.js'
+import { EventEmitter, PlayerSerializer, KeyBinder, LocalStorage } from '../utils.js'
+import {Channel, Preset} from '../SoundKit.js'
 
 const STATE_PLAYING = 'play'
 const STATE_STOPED = 'stop'
@@ -21,7 +16,7 @@ class soundKit {
         this.activePreset = null
         this.activeChannel = null
 
-        this.event = new Event()
+        this.event = new EventEmitter()
         this.keyBinder = new KeyBinder()
 
         document.addEventListener( 'keypress', e =>{ 
@@ -31,7 +26,7 @@ class soundKit {
 
     // add channel and set it as active
     addChannel(id = Date.now()) {
-        const channel = new SoundKitChannel({ id })
+        const channel = new Channel({ id })
 
         this.channels.push(channel)
         this.activeChannel = channel
@@ -147,7 +142,7 @@ class soundKit {
     }
 
     playSoundAtIndex(index) {
-        if(index == -1 || this.getPreset().length < index)
+        if(index == -1 || this.getPreset().length - 1 <= index)
             return
 
         this.run( this.getPreset()[index] )
@@ -163,6 +158,8 @@ class soundKit {
 
     run(sound) {
         sound.play()
+
+        this.event.emit('sound', sound)
 
         if( this.state === STATE_RECORDING ) {
             this.activeChannel.record( sound )
