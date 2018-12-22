@@ -6,11 +6,9 @@ const defaultKeyOrder = [
 ]
 
 class KeyBinder {
-
     constructor(scheme = defaultKeyOrder) {
-        return scheme.map( key => key.charCodeAt() )
+        return scheme.map(key => key.charCodeAt())
     }
-
 }
 
 export default KeyBinder

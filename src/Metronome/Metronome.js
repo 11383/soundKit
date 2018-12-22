@@ -1,33 +1,29 @@
 import { Channel, Preset } from '../SoundKit.js'
 import { EventEmitter } from '../utils.js'
-import metronomeSounds from './sounds/metronomePreset.js'
-
-const defaultParams = {
-    beats: 4,
-    tempo: 120,
-    preset: metronomeSounds
-}
+import metronomePreset from './sounds/metronomePreset.js'
 
 class Metronome extends Channel {
-
-    constructor( params = defaultParams ) {
+    constructor({
+        beats = 4,
+        tempo = 120,
+        preset = metronomePreset
+    } = {}) 
+    {
         super()
-
-        const { beats, tempo, preset } = {...defaultParams, ...params}
 
         this.beats = beats
         this.tempo = tempo
-        this.beatsCounter = 0
+        this.barCounter = 0
         this.event = new EventEmitter()
 
-        this.loop( true )
-        this.addPreset( preset )
+        this.loop(true)
+        this.addPreset(preset)
     }
 
     addPreset(sounds) {
         Preset
-        .load( sounds, 'metronome' )
-        .then( preset => this.onPresetLoaded(preset) )
+        .load(sounds, 'metronome')
+        .then(preset => this.onPresetLoaded(preset))
     }
 
     onPresetLoaded(preset) {
@@ -45,32 +41,37 @@ class Metronome extends Channel {
             .fill(undefined)
             .map( (_, index) => ({
                 time: index * step,
-                audio: this.preset[ Number(!!index) ]
+                audio: this.preset[ Number(!!index) ],
+                index: index + 1
             })
         )
 
         this.duration = this.beats * step
     }
 
-    play( params ) {
-        this.event.emit(`beat_${this.beatsCounter}`)
-        this.event.emit('beat', this.beatsCounter)
+    play(params) {
+        this.event.emit('bar', this.barCounter)
 
-        super.play( params )
+        super.play(params)
 
-        this.beatsCounter++
+        this.barCounter++
     }
 
-    playSound( params ) {
-        super.playSound( params )
-        
-        this.event.emit( 'sound', params )
+    playSound(params) {
+        super.playSound(params)
+
+        this.event.emit('beat', {
+            bar: this.barCounter,
+            beat: params.index,
+            beats: this.beats,
+            tempo: this.tempo
+        })
     }
 
-    stop( params ) {
-        super.stop( params )
+    stop(params) {
+        super.stop(params)
 
-        this.beatsCounter = 0
+        this.barCounter = 0
     }
 
     setTempo(tempo) {
@@ -79,7 +80,7 @@ class Metronome extends Channel {
         this.update()
     }   
 
-    setMetrum( beats ) {
+    setBeats(beats) {
         this.beats = beats
 
         this.update()

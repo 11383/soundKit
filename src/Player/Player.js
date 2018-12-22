@@ -6,7 +6,7 @@ const STATE_STOPED = 'stop'
 const STATE_INIT = 'init'
 const STATE_RECORDING = 'record'
 
-class soundKit {
+class Player {
     constructor() {
         this.state = STATE_INIT
 
@@ -19,8 +19,10 @@ class soundKit {
         this.event = new EventEmitter()
         this.keyBinder = new KeyBinder()
 
-        document.addEventListener( 'keypress', e =>{ 
-            this.playSoundAtIndex( this.keyBinder.indexOf( e.charCode ) )
+        document.addEventListener('keypress', e => { 
+            this.playSoundAtIndex(
+                this.keyBinder.indexOf(e.charCode)
+            )
         })
     }
 
@@ -35,10 +37,10 @@ class soundKit {
     }
 
     getChannelIndex(id) {
-        if(id == null)
+        if (id == null)
             return
 
-        const index = this.channels.findIndex( channel => channel.id == id ) 
+        const index = this.channels.findIndex(channel => channel.id == id) 
 
         return index != -1 ? index : null
     }
@@ -46,7 +48,7 @@ class soundKit {
     getChannel(id) {
         const index = this.getChannelIndex(id)
 
-        if(index !== null)
+        if (index !== null)
             return this.channels[index]
     }
 
@@ -63,7 +65,7 @@ class soundKit {
             this.channels.splice(index, 1)
     }
 
-    setKeyBindings( bindings ) {
+    setKeyBindings(bindings) {
         this.keyBinder = new keyBinder(bindings)
     }
 
@@ -76,13 +78,13 @@ class soundKit {
     play() {
         this.state = STATE_PLAYING
 
-        this.channels.forEach( channel => channel.play() )
+        this.channels.forEach(channel => channel.play())
     }
 
     stop() {
         this.state = STATE_STOPED
 
-        this.channels.forEach( channel => channel.stop() )
+        this.channels.forEach(channel => channel.stop())
     }
 
     restart() {
@@ -96,7 +98,7 @@ class soundKit {
         this.activeChannel = null
     }
 
-    record( channelId = this.activeChannel.id ) {
+    record(channelId = this.activeChannel.id) {
         this.stop()
         this.state = STATE_RECORDING
 
@@ -105,18 +107,18 @@ class soundKit {
     }
 
     /* record given channel, with listening other channels */
-    recordWithListening( channelId = this.activeChannel.id ) {
+    recordWithListening(channelId = this.activeChannel.id) {
         this.record(channelId)
 
-        this.channels.forEach( channel => 
+        this.channels.forEach(channel => 
             channel.id != channelId && channel.play() 
         )
     }
 
     addPreset(name, sounds) {
         Preset
-        .load( sounds, name )
-        .then( preset => this.onPresetLoaded(name, preset) )
+        .load(sounds, name)
+        .then(preset => this.onPresetLoaded(name, preset))
     }
 
     setPreset(presetName) {
@@ -131,7 +133,7 @@ class soundKit {
     }
 
     getPresetsName() {
-        return Object.keys( this.presets )
+        return Object.keys(this.presets)
     }
 
     onPresetLoaded(name, preset) {
@@ -145,15 +147,15 @@ class soundKit {
         if(index == -1 || this.getPreset().length - 1 <= index)
             return
 
-        this.run( this.getPreset()[index] )
+        this.run(this.getPreset()[index])
     }
 
     playSound(soundName) {
-        const sound = this.getPreset().find( sound =>
+        const sound = this.getPreset().find(sound =>
             sound.name == soundName
         )
 
-        sound && this.run( sound )
+        sound && this.run(sound)
     }
 
     run(sound) {
@@ -161,8 +163,8 @@ class soundKit {
 
         this.event.emit('sound', sound)
 
-        if( this.state === STATE_RECORDING ) {
-            this.activeChannel.record( sound )
+        if(this.state === STATE_RECORDING) {
+            this.activeChannel.record(sound)
         }
     }
 
@@ -190,4 +192,4 @@ class soundKit {
     isRecording() { return this.state == STATE_RECORDING }
 }
 
-export default soundKit
+export default Player

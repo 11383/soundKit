@@ -23,7 +23,7 @@ class PlayerSerializer {
         player.setChannel(activeChannel)
         player.setPreset(activePreset)
 
-        player.channels = channels.map( channel => 
+        player.channels = channels.map(channel => 
             ChannelSerializer.parse(channel, presets)
         )
         
