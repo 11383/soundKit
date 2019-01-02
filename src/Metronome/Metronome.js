@@ -40,6 +40,7 @@ class Metronome extends Channel {
             Array(this.beats)
             .fill(undefined)
             .map( (_, index) => ({
+                step,
                 time: index * step,
                 audio: this.preset[ Number(!!index) ],
                 index: index + 1
@@ -64,6 +65,7 @@ class Metronome extends Channel {
             bar: this.barCounter,
             beat: params.index,
             beats: this.beats,
+            step: params.step,
             tempo: this.tempo
         })
     }

@@ -31,7 +31,10 @@ class Player {
         const channel = new Channel({ id })
 
         this.channels.push(channel)
-        this.activeChannel = channel
+
+        this.event.emit('channel.add', channel)
+
+        this.setChannel(id)
 
         return channel.id
     }
@@ -55,14 +58,21 @@ class Player {
     setChannel(channelId) {
         const channel = this.getChannel(channelId)
 
-        channel && (this.activeChannel = channel)
+        if (channel !== null) {
+            this.activeChannel = channel
+
+            this.event.emit('channel.set', channel)
+        }
     }
 
     removeChannel(id = null) {
         const index = this.getChannelIndex(id)
 
-        if(index !== null)
+        if (index !== null) {
             this.channels.splice(index, 1)
+            
+            this.event.emit('channel.remove', index)
+        }
     }
 
     setKeyBindings(bindings) {
@@ -122,10 +132,12 @@ class Player {
     }
 
     setPreset(presetName) {
-        if(!this.presets[presetName])
+        if (!this.presets[presetName])
             throw new Error(`Preset with given name '${presetName}' not exists in player`)
 
         this.activePreset = presetName
+
+        this.event.emit('preset.changed', this.activePreset, this.getPreset())
     }
 
     getPreset(presetName = this.activePreset) {
@@ -137,10 +149,10 @@ class Player {
     }
 
     onPresetLoaded(name, preset) {
-        this.activePreset = name
         this.presets[name] = preset
+        this.setPreset(name)
 
-        this.event.emit('loaded', preset)
+        this.event.emit('preset.loaded', preset)
     }
 
     playSoundAtIndex(index) {
