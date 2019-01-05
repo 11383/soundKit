@@ -66,7 +66,7 @@ class ChannelRender {
 
     itemEventListeners(item, channel) {
         item.addEventListener('click', _ => {
-            player.setChannel(channel.id)
+            this.player.setChannel(channel.id)
         })
     }
 
