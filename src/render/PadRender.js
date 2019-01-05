@@ -51,8 +51,11 @@ class PadRender {
     }
 
     itemEventListeners(item, audioLoader) {
-        item.addEventListener('touchstart', _ => {
-            this.player.playSound(audioLoader.name)
+        ['touchstart', 'click'].forEach(event => {
+            item.addEventListener(event, e => {
+                this.player.playSound(audioLoader.name)
+                e.preventDefault();
+            })
         })
     }
 
