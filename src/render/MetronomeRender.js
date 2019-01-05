@@ -15,7 +15,7 @@ class MetronomeRender {
     render() {
         const counter = this.element
 
-        if (!this.metronome.soundTrack)
+        if (this.metronome.soundsTrack.length == 0)
             return
             
         counter.innerHTML = ''
@@ -57,9 +57,7 @@ class MetronomeRender {
         }
 
         /* event: last beat from first bar */
-        if( event.bar == 1 && event.beat == event.beats) {
-            console.log('recording')
-
+        if(event.bar == 1 && event.beat == event.beats) {
             const counter = document.querySelector('.metre-counter')
             counter.classList.remove('metre-counter--active')
         }
@@ -70,8 +68,6 @@ class MetronomeRender {
             //disable metre counter
         }
     }
-
-
 }
 
 export default MetronomeRender

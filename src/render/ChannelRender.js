@@ -13,7 +13,7 @@ class ChannelRender {
     }
 
     render() {
-        const channelsItems = this.player.channels.map(channel => this.renderItem)
+        const channelsItems = this.player.channels.map(channel => this.renderItem(channel))
         
         channelsItems.push(this.renderItemAdd())
 
