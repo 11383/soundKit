@@ -89,17 +89,23 @@ class Player {
         this.state = STATE_PLAYING
 
         this.channels.forEach(channel => channel.play())
+
+        this.event.emit('player.play')
     }
 
     stop() {
         this.state = STATE_STOPED
 
         this.channels.forEach(channel => channel.stop())
+
+        this.event.emit('player.stop')
     }
 
     restart() {
         this.stop()
         this.play()
+
+        this.event.emit('player.restart')
     }
 
     clear() {
@@ -114,6 +120,8 @@ class Player {
 
         this.activeChannel = this.getChannel(channelId)
         this.activeChannel.startRecording()
+
+        this.event.emit('player.record')
     }
 
     /* record given channel, with listening other channels */
@@ -189,14 +197,18 @@ class Player {
             name,
             PlayerSerializer.from(this)
         )
+
+        this.event.emit('player.save')
     }
 
     load(name, storage = LocalStorage) {
         const storedData = storage.get(name)
-
+        
         Object.assign(this,
             PlayerSerializer.parse(storedData, this.presets)    
         )
+
+        this.event.emit('player.load')
     }
 
     isPlaying() { return this.state == STATE_PLAYING }

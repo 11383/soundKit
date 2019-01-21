@@ -22,29 +22,13 @@
             metronome
         })
 
-        window.render = render
-
+        player.addPreset('test', test)
+        player.addPreset('drum', drum)
 
         player.addChannel('drum')
         player.addChannel('drum2')
 
-        
-        player.addPreset('test', test)
-        player.addPreset('drum', drum)
-
-        const e = ['#metronome-tempo', '#metronome-beats']
-
-        e.forEach( selector => {
-            const element = document.querySelector(selector)
-
-            element.addEventListener('focusin', () => metronome.play() )
-            element.addEventListener('focusout', () => metronome.stop() )
-            element.addEventListener('change', (e) => {
-                metronome.stop()
-                metronome.setTempo(element.value)
-                metronome.play()
-            })
-        })
+        window.render = render
     </script>
 
     <script>
@@ -89,25 +73,6 @@
     </div>
     
     <div class="toolbar soundKit-toolbar">
-        
-        <div class="toolbar__item">
-            <div class="icon icon-play" onclick="render.play()"></div>
-        </div>
-        
-        <div class="toolbar__item">
-            <div class="icon icon-stop" onclick="render.stop()"></div>
-        </div>
-
-        <div class="toolbar__item">
-            <div class="icon icon-record" onclick="render.record()"></div>
-        </div>
-
-        <div class="toolbar__item" style="margin: 0 20px">
-            
-            <input type="number" value="120" id="metronome-tempo">
-            <div class="icon icon-metronome"></div>
-            <input type="number" value="4" id="metronome-beats">
-        </div>
     </div>
 </body>
 </html>

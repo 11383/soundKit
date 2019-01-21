@@ -8,7 +8,7 @@ class AudioLoader {
 
     load() {
         return new Promise( (resolve, rejected) => {
-            this.audio.addEventListener('canplaythrough', () => { 
+            this.audio.addEventListener('canplaythrough', () => {
                 resolve(this) 
             })
 
@@ -16,7 +16,7 @@ class AudioLoader {
                 rejected(e)
             })
 
-            this.audio.load()
+            setTimeout( _ => this.audio.load(), 100) //chrome:fix
         })
     }
 

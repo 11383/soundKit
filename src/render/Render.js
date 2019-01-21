@@ -2,6 +2,7 @@ import MetronomeRender from './MetronomeRender.js'
 import PadRender from './PadRender.js'
 import ChannelRender from './ChannelRender.js'
 import PresetRender from './PresetRender.js'
+import ToolbarRender from './ToolbarRender.js'
 
 class SoundKitRenderer {
     constructor(place, {player, metronome} = {
@@ -33,6 +34,12 @@ class SoundKitRenderer {
             player
         ))
 
+        this.renders.push( new ToolbarRender(
+            '.soundKit-toolbar',
+            player,
+            metronome
+        ))
+
         this.render()
 
         this.initEventListeners()
@@ -54,7 +61,6 @@ class SoundKitRenderer {
             && event.beat == event.beats
         ) {
             console.log('recording [renderer]', this.state)
-            // this.player.record()
             this.player.recordWithListening()
         }
     }

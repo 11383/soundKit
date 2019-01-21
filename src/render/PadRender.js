@@ -16,19 +16,24 @@ class PadRender {
         if(!this.player.getPreset()) 
             return
 
-        const padItems = this.player.getPreset().map(audio => 
-            this.renderItem(audio) 
-        )
+        const padItems = this.player.getPreset().map((audio,index) => { 
+            const charcodeKey = this.player.keyBinder[index]
+            return this.renderItem(audio, String.fromCharCode(charcodeKey)) 
+        })
 
         this.element.innerHTML = ''
         this.element.append(...padItems)
     }
 
-    renderItem(audioLoader) {
+    renderItem(audioLoader, key) {
         const item = document.createElement('div')
               item.classList.add('card')
               item.setAttribute('data-sound', audioLoader.name)
               item.innerText = audioLoader.name
+              item.innerHTML = `
+                ${audioLoader.name}
+                <span class="card__key">${key}</span>    
+            `
 
         this.itemEventListeners(item, audioLoader)
 
@@ -60,6 +65,7 @@ class PadRender {
     }
 
     initEventListeners() {
+        this.player.on('preset.loaded', _ => this.render() )
         this.player.on('preset.changed', _ => this.render() )
         this.player.on('sound', data => this.onPadItemActive(data) )
     }
