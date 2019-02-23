@@ -1,4 +1,4 @@
-const path = (name) => `./presets/drum/${name}.wav`
+const path = (name) => `./examples/simple/presets/drum/${name}.wav`
 
 export default [
     { name: "boom", path: path('boom') },

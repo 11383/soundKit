@@ -4,15 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-
+    <base href="../../">
     <title>SoundKit</title>
 
-    <link rel="stylesheet" href="demo.css">
+    <link rel="stylesheet" href="./examples/simple/demo.css">
     <link href="https://fonts.googleapis.com/css?family=Oswald:200" rel="stylesheet">
     
     <script type="module">
-        import { Player, Metronome, Render } from '../../src/SoundKit.js'
-        import { drum, test } from './presets/presets.js'
+        import { Player, Metronome, Render } from './src/SoundKit.js'
+        import { drum, test } from './examples/simple/presets/presets.js'
 
         const player = new Player()
         const metronome = new Metronome({ beats: 4, tempo: 120 })

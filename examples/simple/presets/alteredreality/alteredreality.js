@@ -1,4 +1,4 @@
-const path = (name) => `./presets/alteredreality/${name}.wav`
+const path = (name) => `./examples/simple/presets/alteredreality/${name}.wav`
 
 export default [
     { name: "Bitch_C1", path: path('Bitch_C1') },
